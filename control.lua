@@ -35,6 +35,7 @@ end
 
 function ap_airship.set_lift(self, longit_speed, direction)
     direction = direction or 0
+    local vel = self.object:get_velocity()
 
     self._is_going_up = false
     local work_speed = math.abs(longit_speed)
@@ -42,14 +43,15 @@ function ap_airship.set_lift(self, longit_speed, direction)
     local normal_lift = 0.15
     local extra_lift = 0.15
     local abs_baloon_buoyancy = normal_lift + ((work_speed*extra_lift)/ap_airship.max_speed)
-	if direction == 1 then
+    local max_v_speed = 0.5
+    if direction == 1 and vel.y <= max_v_speed then
         --if self._boiler_pressure > 0 then
             self._baloon_buoyancy = abs_baloon_buoyancy
         --end
         self._is_going_up = true
-	elseif direction == -1 then
+    elseif direction == -1 and vel.y >= -1*max_v_speed then
         self._baloon_buoyancy = -1*abs_baloon_buoyancy
-	end
+    end
 end
 
 function ap_airship.control(self, dtime, hull_direction, longit_speed, accel)
