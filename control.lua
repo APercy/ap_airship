@@ -54,6 +54,24 @@ function ap_airship.set_lift(self, longit_speed, direction)
     end
 end
 
+-- control can be -100 to +100
+function ap_airship.set_rudder_by_percent(self, control)
+    local rudder_limit = 30
+    local sign = 1
+    if control < 0 then sign = -1 end
+    if math.abs(control) > 100 then control = 100*sign end
+    self._rudder_angle = ((math.abs(control)*rudder_limit)/100)*sign
+end
+
+function ap_airship.get_rudder_by_percent(self)
+    local rudder_limit = 30
+    local sign = 1
+    if self._rudder_angle < 0 then sign = -1 end
+    if math.abs(self._rudder_angle) > 30 then self._rudder_angle = 30*sign end
+    return ((math.abs(self._rudder_angle)*100)/rudder_limit)*sign
+end 
+
+
 function ap_airship.control(self, dtime, hull_direction, longit_speed, accel)
     if self._last_time_command == nil then self._last_time_command = 0 end
     self._last_time_command = self._last_time_command + dtime
@@ -113,14 +131,18 @@ function ap_airship.control(self, dtime, hull_direction, longit_speed, accel)
 
 		-- rudder
         local rudder_limit = 30
-        local speed = 10
+        local speed = 30
+        local curr_control = ap_airship.get_rudder_by_percent(self)
 		if ctrl.right then
-			self._rudder_angle = math.max(self._rudder_angle-speed*dtime,-rudder_limit)
+            ap_airship.set_rudder_by_percent(self, curr_control-speed*dtime)
 		elseif ctrl.left then
-			self._rudder_angle = math.min(self._rudder_angle+speed*dtime,rudder_limit)
+            ap_airship.set_rudder_by_percent(self, curr_control+speed*dtime)
 		end
 	end
 
+    --corrections from automation
+    if self._power_lever > 100 then self._power_lever = 100 end
+    if self._power_lever < -100 then self._power_lever = -100 end
 
     --engine acceleration calc
     local engineacc = (self._power_lever * ap_airship.max_engine_acc) / 100;
