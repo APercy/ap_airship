@@ -550,7 +550,7 @@ minetest.register_entity("ap_airship:airship", {
         --minetest.chat_send_all('newroll: '.. newroll)
         ---------------------------------
         -- end roll
-        local wind = airutils.get_wind(curr_pos, 0.3)
+        local wind = airutils.get_wind(curr_pos, 0.15)
         local wind_yaw = minetest.dir_to_yaw(wind)
         --minetest.chat_send_all("x: "..wind.x.. " - z: "..wind.z.." - yaw: "..math.deg(wind_yaw).. " - orig: "..wind_yaw)
 
