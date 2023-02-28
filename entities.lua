@@ -289,7 +289,7 @@ minetest.register_entity("ap_airship:airship", {
     timeout = 0;
     buoyancy = 0.15,
     max_hp = 50,
-    anchored = false,
+    anchored = true,
     physics = ap_airship.physics,
     hull_integrity = nil,
     owner = "",
