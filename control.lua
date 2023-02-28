@@ -100,7 +100,7 @@ function ap_airship.control(self, dtime, hull_direction, longit_speed, accel)
         --end lift
 
         --check if is near the ground, so revert the flight mode
-        local noded = automobiles_lib.nodeatpos(airutils.pos_shift(self.object:get_pos(),{y=-4}))
+        local noded = airutils.nodeatpos(airutils.pos_shift(self.object:get_pos(),{y=-4}))
         if (noded and noded.drawtype ~= 'airlike') then
             --avoid liquids
             if noded.drawtype == 'liquid' then
