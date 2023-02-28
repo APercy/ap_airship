@@ -33,6 +33,25 @@ function ap_airship.powerAdjust(self,dtime,factor,dir,max_power)
     end
 end
 
+function ap_airship.set_lift(self, longit_speed, direction)
+    direction = direction or 0
+
+    self._is_going_up = false
+    local work_speed = math.abs(longit_speed)
+    if ap_airship.max_speed < work_speed then work_speed = ap_airship.max_speed end --limit the range
+    local normal_lift = 0.15
+    local extra_lift = 0.15
+    local abs_baloon_buoyancy = normal_lift + ((work_speed*extra_lift)/ap_airship.max_speed)
+	if direction == 1 then
+        --if self._boiler_pressure > 0 then
+            self._baloon_buoyancy = abs_baloon_buoyancy
+        --end
+        self._is_going_up = true
+	elseif direction == -1 then
+        self._baloon_buoyancy = -1*abs_baloon_buoyancy
+	end
+end
+
 function ap_airship.control(self, dtime, hull_direction, longit_speed, accel)
     if self._last_time_command == nil then self._last_time_command = 0 end
     self._last_time_command = self._last_time_command + dtime
@@ -70,19 +89,13 @@ function ap_airship.control(self, dtime, hull_direction, longit_speed, accel)
         if not ctrl.aux1 and self._power_lever < 0 then self._power_lever = 0 end
 
         --control lift
-        self._is_going_up = false
-        local work_speed = math.abs(longit_speed)
-        if ap_airship.max_speed < work_speed then work_speed = ap_airship.max_speed end --limit the range
-        local normal_lift = 0.15
-        local extra_lift = 0.15
-        local abs_baloon_buoyancy = normal_lift + ((work_speed*extra_lift)/ap_airship.max_speed)
 		if ctrl.jump then
+            ap_airship.set_lift(self, longit_speed, 1)
             --if self._boiler_pressure > 0 then
-                self._baloon_buoyancy = abs_baloon_buoyancy
             --end
             self._is_going_up = true
 		elseif ctrl.sneak then
-            self._baloon_buoyancy = -1*abs_baloon_buoyancy
+            ap_airship.set_lift(self, longit_speed, -1)
 		end
         --end lift
 
