@@ -63,11 +63,11 @@ function ap_airship.passengers_deck_map(pos, dpos)
 end
 
 function ap_airship.ladder_map(pos, dpos)
-    local orig_pos = steampunk_blimp.copy_vector(pos)
-    local position = steampunk_blimp.copy_vector(dpos)
-    local new_pos = steampunk_blimp.copy_vector(dpos)
-    new_pos.z = steampunk_blimp.clamp(new_pos.z, 112, 118)
-    new_pos.x = steampunk_blimp.clamp(new_pos.x, -8.42, -2)
+    local orig_pos = ap_airship.copy_vector(pos)
+    local position = ap_airship.copy_vector(dpos)
+    local new_pos = ap_airship.copy_vector(dpos)
+    new_pos.z = ap_airship.clamp(new_pos.z, 112, 118)
+    new_pos.x = ap_airship.clamp(new_pos.x, -8.42, -2)
 
     return new_pos
 end
