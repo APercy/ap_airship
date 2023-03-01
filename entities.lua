@@ -435,12 +435,6 @@ minetest.register_entity("ap_airship:airship", {
 	    
 	    if colinfo then 
 		    self.isonground = colinfo.touching_ground
-	    else
-		    if self.lastvelocity.y==0 and vel.y==0 then
-			    self.isonground = true
-		    else
-			    self.isonground = false
-		    end
 	    end
 	    
 	    self:physics()
@@ -554,7 +548,7 @@ minetest.register_entity("ap_airship:airship", {
         local wind_yaw = minetest.dir_to_yaw(wind)
         --minetest.chat_send_all("x: "..wind.x.. " - z: "..wind.z.." - yaw: "..math.deg(wind_yaw).. " - orig: "..wind_yaw)
 
-        if self.anchored == false then
+        if self.anchored == false and self.isonground == false then
             accel = vector.add(accel, wind)
         else
             accel = vector.new()
@@ -572,6 +566,12 @@ minetest.register_entity("ap_airship:airship", {
         self.object:set_bone_position("rudder", {x=0,y=60.5919,z=-284.79}, {x=0,y=self._rudder_angle-180,z=0})
         self.object:set_bone_position("timao", {x=0,y=-22.562,z=176.018}, {x=0,y=0,z=self._rudder_angle*8})
         self.object:set_bone_position("compass_axis", {x=0,y=-21.8,z=178.757}, {x=0, y=S_angle, z=0})
+
+        if self.isonground then
+            self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=-18,y=0,z=0})
+        else
+            self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=0,y=0,z=0})
+        end
 
         --saves last velocy for collision detection (abrupt stop)
         self._last_vel = self.object:get_velocity()

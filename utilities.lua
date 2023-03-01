@@ -267,6 +267,8 @@ function ap_airship.destroy(self, overload)
     if self._passengers_base[3] then self._passengers_base[3]:remove() end
     if self._passengers_base[4] then self._passengers_base[4]:remove() end
     if self._passengers_base[5] then self._passengers_base[5]:remove() end
+    if self._cabin_interactor then self._cabin_interactor:remove() end
+    if self._control_interactor then self._control_interactor:remove() end
 
     airutils.destroy_inventory(self)
     self.object:remove()
