@@ -515,7 +515,7 @@ minetest.register_entity("ap_airship:airship", {
         local sdir = minetest.yaw_to_dir(newyaw)
         local snormal = {x=sdir.z,y=0,z=-sdir.x}    -- rightside, dot is negative
         local prsr = ap_airship.dot(snormal,nhdir)
-        local rollfactor = -15
+        local rollfactor = -4
         local newroll = 0
         if self._last_roll ~= nil then newroll = self._last_roll end
         --oscilation when stoped
