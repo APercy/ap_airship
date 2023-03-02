@@ -73,7 +73,7 @@ function ap_airship.cabin_map(pos, dpos)
     new_pos.y = -29
     new_pos.x = ap_airship.clamp(new_pos.x, -8.42, 8.42)
 
-    minetest.chat_send_all("x: "..new_pos.x.." - z: "..new_pos.z)
+    --minetest.chat_send_all("x: "..new_pos.x.." - z: "..new_pos.z)
     return new_pos
 end
 
