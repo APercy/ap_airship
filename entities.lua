@@ -567,7 +567,8 @@ minetest.register_entity("ap_airship:airship", {
         self.object:set_bone_position("timao", {x=0,y=-22.562,z=176.018}, {x=0,y=0,z=self._rudder_angle*8})
         self.object:set_bone_position("compass_axis", {x=0,y=-21.8,z=178.757}, {x=0, y=S_angle, z=0})
 
-        if self.isonground then
+		local noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-3.7}))
+	    if (noded and noded.drawtype ~= 'airlike') or self.isonground then
             self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=-18,y=0,z=0})
         else
             self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=0,y=0,z=0})
