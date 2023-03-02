@@ -12,10 +12,10 @@ ap_airship.max_seats = 2
 ap_airship.pilot_base_pos = {x=0.0,y=-29,z=170}
 ap_airship.passenger_pos = {
     [1] = {x=0.0,y=0,z=60},
-    [2] = {x=-11,y=0,z=20},
-    [3] = {x=11,y=0,z=20},
-    [4] = {x=-11,y=0,z=80},
-    [5] = {x=11,y=0,z=80},
+    [2] = {x=-32,y=0,z=20},
+    [3] = {x=32,y=0,z=20},
+    [4] = {x=-32,y=0,z=80},
+    [5] = {x=32,y=0,z=80},
     }
 
 ap_airship.canvas_texture = "wool_white.png^[colorize:#f4e7c1:128"
@@ -27,6 +27,8 @@ ap_airship.rotor_texture = "ap_airship_helice.png"
 ap_airship.textures = {
             ap_airship.grey_texture, --"ap_airship_painting.png", --balao
             ap_airship.metal_texture, --ponteira nariz
+            "ap_airship_brown.png", --mobilia
+            ap_airship.metal_texture, --mobilia
             ap_airship.black_texture, -- corpo da bussola
             ap_airship.metal_texture, -- indicador bussola
             ap_airship.grey_texture, --"ap_airship_painting.png", --empenagem
@@ -46,6 +48,7 @@ ap_airship.textures = {
             ap_airship.black_texture, --piso
             "ap_airship_alpha_logo.png", --logo
             ap_airship.metal_texture,
+            "wool_red.png",
         }
 
 ap_airship.colors ={

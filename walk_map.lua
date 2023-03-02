@@ -15,17 +15,65 @@ function ap_airship.reclamp(value, min, max)
     return retVal
 end
 
+local function is_obstacle_zone(pos, start_point, end_point)
+    local retVal = ap_airship.table_copy(pos)
+
+    local min_x = 0
+    local min_z = 0
+    local max_x = 0
+    local max_z = 0
+
+    if start_point.x <= end_point.x then min_x = start_point.x else min_x = end_point.x end
+    if start_point.z <= end_point.z then min_z = start_point.z else min_z = end_point.z end
+    if start_point.x > end_point.x then max_x = start_point.x else max_x = end_point.x end
+    if start_point.z > end_point.z then max_z = start_point.z else max_z = end_point.z end
+
+    local mid_x = (max_x - min_x)/2
+    local mid_z = (max_z - min_z)/2
+
+    if pos.x < max_x and pos.x > min_x+mid_x and
+            pos.z < max_z and pos.z > min_z then
+        retVal.x = max_x + 1
+        return retVal
+    end
+    if pos.x > min_x and pos.x <= min_x+mid_x and
+            pos.z < max_z and pos.z > min_z then
+        retVal.x = min_x - 1
+        return retVal
+    end
+
+    if pos.z < max_z and pos.z > min_z+mid_z and
+            pos.x > min_x and pos.x < max_x then
+        retVal.z = max_z + 1
+        return retVal
+    end
+    if pos.z > min_z and pos.z <= min_z+mid_z and
+            pos.x > min_x and pos.x < max_x then
+        retVal.z = min_z - 1
+        return retVal
+    end
+
+    return retVal
+end
+
 function ap_airship.cabin_map(pos, dpos)
     local orig_pos = ap_airship.copy_vector(pos)
     local position = ap_airship.copy_vector(dpos)
     local new_pos = ap_airship.copy_vector(dpos)
+
+    new_pos = is_obstacle_zone(new_pos, {x=12, z=153}, {x=2.5, z=143})
+    new_pos = is_obstacle_zone(new_pos, {x=-12, z=153}, {x=-2.5, z=143})
+    new_pos = is_obstacle_zone(new_pos, {x=12, z=140}, {x=2.5, z=130})
+    new_pos = is_obstacle_zone(new_pos, {x=-12, z=140}, {x=-2.5, z=130})
+    new_pos = is_obstacle_zone(new_pos, {x=12, z=127}, {x=2.5, z=117})
+    new_pos = is_obstacle_zone(new_pos, {x=-12, z=127}, {x=-2.5, z=117})
 
     --limit to the cabin
     new_pos.z = ap_airship.clamp(new_pos.z, 112, 164)
     new_pos.y = -29
     new_pos.x = ap_airship.clamp(new_pos.x, -8.42, 8.42)
 
-    --minetest.chat_send_all("x: "..new_pos.x.." - z: "..new_pos.z)
+    minetest.chat_send_all("x: "..new_pos.x.." - z: "..new_pos.z)
     return new_pos
 end
 
@@ -55,6 +103,12 @@ function ap_airship.passengers_deck_map(pos, dpos)
         --limiting upper deck
         new_pos.z = ap_airship.clamp(new_pos.z, 3, 109)
         new_pos.x = ap_airship.clamp(new_pos.x, -43, 43)
+
+        new_pos = is_obstacle_zone(new_pos, {x=30, z=10}, {x=2, z=48})
+        new_pos = is_obstacle_zone(new_pos, {x=-30, z=10}, {x=-2, z=48})
+
+        new_pos = is_obstacle_zone(new_pos, {x=30, z=55}, {x=2, z=90})
+        new_pos = is_obstacle_zone(new_pos, {x=-30, z=55}, {x=-2, z=90})
     end
     new_pos.y = 0
 
@@ -105,6 +159,7 @@ function ap_airship.navigate_deck(pos, dpos, player)
             end
         end
     end
+    --minetest.chat_send_all(dump(pos_d))
 
     return pos_d
 end

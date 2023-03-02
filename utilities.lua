@@ -212,6 +212,14 @@ function ap_airship.textures_copy()
     return tablecopy
 end
 
+function ap_airship.table_copy(table_here)
+    local tablecopy = {}
+    for k, v in pairs(table_here) do
+      tablecopy[k] = v
+    end
+    return tablecopy
+end
+
 local function paint(self)
     local l_textures = ap_airship.textures_copy()
     for _, texture in ipairs(l_textures) do
