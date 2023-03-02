@@ -230,7 +230,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                     local max_speed_anchor = 0.6
                     if ent._longit_speed then
                         local is_admin = minetest.check_player_privs(player, {server=true}) --force stop by admins
-                        if (math.abs(ent._longit_speed) < max_speed_anchor and self.isonground) or is_admin then
+                        if (math.abs(ent._longit_speed) < max_speed_anchor and ent.isonground) or is_admin then
                             ent.anchored = true
                             ent.object:set_acceleration(vector.new())
                             ent.object:set_velocity(vector.new())
