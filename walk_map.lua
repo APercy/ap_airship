@@ -241,7 +241,6 @@ function ap_airship.move_persons(self)
                         new_pos.x = new_pos.x - result_pos.z
                         new_pos.z = new_pos.z - result_pos.x
                         --minetest.chat_send_all(dump(new_pos))
-                        --local pos_d = ap_airship.boat_lower_deck_map(self._passengers_base_pos[i], new_pos)
                         local pos_d = ap_airship.navigate_deck(self._passengers_base_pos[i], new_pos, player)
                         --minetest.chat_send_all(dump(height))
                         self._passengers_base_pos[i] = ap_airship.copy_vector(pos_d)
