@@ -106,7 +106,7 @@ local function right_click_controls(self, clicker)
         if ship_self.owner == "" then
             ship_self.owner = name
         end
-
+        local can_bypass = minetest.check_player_privs(clicker, {protection_bypass=true})
         if ship_self.driver_name ~= nil and ship_self.driver_name ~= "" then
             --shows pilot formspec
             if name == ship_self.driver_name then
@@ -556,6 +556,12 @@ minetest.register_entity("ap_airship:airship", {
         accel.y = accel_y
 
         newpitch = velocity.y * math.rad(1.5) * (longit_speed/3)
+
+		local noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-4.5}))
+	    if (noded and noded.drawtype ~= 'airlike') or self.isonground then
+            newpitch = 0
+        end
+
         self.object:set_acceleration(accel)
         self.object:set_rotation({x=newpitch,y=newyaw,z=newroll})
 
@@ -567,7 +573,7 @@ minetest.register_entity("ap_airship:airship", {
         self.object:set_bone_position("timao", {x=0,y=-22.562,z=176.018}, {x=0,y=0,z=self._rudder_angle*8})
         self.object:set_bone_position("compass_axis", {x=0,y=-21.8,z=178.757}, {x=0, y=S_angle, z=0})
 
-		local noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-3.7}))
+		noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-3.7}))
 	    if (noded and noded.drawtype ~= 'airlike') or self.isonground then
             self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=-18,y=0,z=0})
         else

@@ -100,6 +100,12 @@ function ap_airship.minmax(v,m)
     return math.min(math.abs(v),m)*ap_airship.sign(v)
 end
 
+
+minetest.register_privilege("ap_airship_anchor", {
+    description = "The player can anchor the airship anywhere in any speed",
+    give_to_singleplayer = false
+})
+
 -----------
 -- items
 -----------
