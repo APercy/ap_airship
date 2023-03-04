@@ -185,6 +185,7 @@ minetest.register_entity('ap_airship:control_interactor',{
         textures = {"ap_airship_alpha.png",},
 	},
     dist_moved = 0,
+    max_hp = 65535,
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}
@@ -217,6 +218,7 @@ minetest.register_entity('ap_airship:cabin_interactor',{
         textures = {"ap_airship_alpha.png",},
 	},
     dist_moved = 0,
+    max_hp = 65535,
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}

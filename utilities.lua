@@ -98,7 +98,7 @@ function ap_airship.rescueConnectionFailedPassengers(self)
                 if player then --we have a player!
                     if player_api.player_attached[self._passengers[i]] == nil then --but isn't attached?
                         --minetest.chat_send_all("okay")
-		                if player:get_hp() > 0 then
+		                if player:get_hp() >= 0 then
                             self._passengers[i] = nil --clear the slot first
                             do_attach(self, player, i) --attach
                         else
@@ -114,10 +114,10 @@ end
 -- attach passenger
 function ap_airship.attach_pax(self, player, slot)
     slot = slot or 0
+    local name = player:get_player_name()
 
     --verify if is locked to non-owners
     if self._passengers_locked == true then
-        local name = player:get_player_name()
         local can_bypass = minetest.check_player_privs(player, {protection_bypass=true})
         local is_shared = false
         if name == self.owner or can_bypass then is_shared = true end
@@ -156,6 +156,11 @@ function ap_airship.attach_pax(self, player, slot)
         i = t[k]
         if self._passengers[i] == nil then
             do_attach(self, player, i)
+            if name == self.owner then
+                --put the owner on cabin directly
+                self._passengers_base_pos[i] = {x=0,y=-29,z=150}
+                self._passengers_base[i]:set_attach(self.object,'',self._passengers_base_pos[i],{x=0,y=0,z=0})
+            end
             break
         end
     end

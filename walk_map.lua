@@ -42,12 +42,13 @@ local function is_obstacle_zone(pos, start_point, end_point)
         return retVal
     end
 
-    if pos.z < max_z and pos.z > min_z+mid_z and
+    local death_zone = 1.5 --to avoid the "slip" when colliding in y direction
+    if pos.z < max_z + death_zone and pos.z > min_z+mid_z and
             pos.x > min_x and pos.x < max_x then
         retVal.z = max_z + 1
         return retVal
     end
-    if pos.z > min_z and pos.z <= min_z+mid_z and
+    if pos.z > min_z - death_zone and pos.z <= min_z+mid_z and
             pos.x > min_x and pos.x < max_x then
         retVal.z = min_z - 1
         return retVal
@@ -66,7 +67,6 @@ function ap_airship.cabin_map(pos, dpos)
     new_pos = is_obstacle_zone(new_pos, {x=12, z=140}, {x=2.5, z=130})
     new_pos = is_obstacle_zone(new_pos, {x=-12, z=140}, {x=-2.5, z=130})
     new_pos = is_obstacle_zone(new_pos, {x=12, z=127}, {x=2.5, z=117})
-    new_pos = is_obstacle_zone(new_pos, {x=-12, z=127}, {x=-2.5, z=117})
 
     --limit to the cabin
     new_pos.z = ap_airship.clamp(new_pos.z, 112, 164)
@@ -120,7 +120,7 @@ function ap_airship.ladder_map(pos, dpos)
     local orig_pos = ap_airship.copy_vector(pos)
     local position = ap_airship.copy_vector(dpos)
     local new_pos = ap_airship.copy_vector(dpos)
-    new_pos.z = ap_airship.clamp(new_pos.z, 112, 118)
+    new_pos.z = ap_airship.clamp(new_pos.z, 112, 117)
     new_pos.x = ap_airship.clamp(new_pos.x, -8.42, -2)
 
     return new_pos
