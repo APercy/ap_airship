@@ -71,10 +71,23 @@ local function do_attach(self, player, slot)
     end
 end
 
+function ap_airship.get_passenger_seat_index(self, name)
+    local index = 0
+    for i = ap_airship.max_pos,1,-1 
+    do
+        if self._passengers[i] == name then
+            index = i
+            break
+        end
+    end
+
+    return index
+end
+
 function ap_airship.check_passenger_is_attached(self, name)
     local is_attached = false
     if is_attached == false then
-        for i = 5,1,-1 
+        for i = ap_airship.max_pos,1,-1 
         do 
             if self._passengers[i] == name then
                 is_attached = true
@@ -91,7 +104,7 @@ function ap_airship.rescueConnectionFailedPassengers(self)
     if self._disconnection_check_time > 1 then
         --minetest.chat_send_all(dump(self._passengers))
         self._disconnection_check_time = 0
-        for i = 5,1,-1 
+        for i = ap_airship.max_pos,1,-1 
         do 
             if self._passengers[i] then
                 local player = minetest.get_player_by_name(self._passengers[i])
@@ -173,7 +186,7 @@ function ap_airship.dettach_pax(self, player, side)
         ap_airship.remove_hud(player)
 
         -- passenger clicked the object => driver gets off the vehicle
-        for i = 5,1,-1 
+        for i = ap_airship.max_pos,1,-1 
         do 
             if self._passengers[i] == name then
                 self._passengers[i] = nil
@@ -275,11 +288,16 @@ function ap_airship.destroy(self, overload)
     end
 
     local pos = self.object:get_pos()
-    if self._passengers_base[1] then self._passengers_base[1]:remove() end
-    if self._passengers_base[2] then self._passengers_base[2]:remove() end
-    if self._passengers_base[3] then self._passengers_base[3]:remove() end
-    if self._passengers_base[4] then self._passengers_base[4]:remove() end
-    if self._passengers_base[5] then self._passengers_base[5]:remove() end
+    for i = ap_airship.max_pos,1,-1 
+    do
+        if self._passengers_base[i] then self._passengers_base[i]:remove() end
+    end
+
+    for i = ap_airship.max_seats,1,-1 
+    do
+        if self._chairs[i] then self._chairs[i]:remove() end
+    end
+
     if self._cabin_interactor then self._cabin_interactor:remove() end
     if self._control_interactor then self._control_interactor:remove() end
 
@@ -346,7 +364,7 @@ function ap_airship.checkAttach(self, player)
     if player then
         local player_attach = player:get_attach()
         if player_attach then
-            for i = 5,1,-1 
+            for i = ap_airship.max_pos,1,-1 
             do 
                 if player_attach == self._passengers_base[i] then
                     retVal = true

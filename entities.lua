@@ -29,7 +29,7 @@ local function right_click_function(self, clicker)
 
     --check error after being shot for any other mod
     if is_attached == false then
-        for i = ap_airship.max_seats,1,-1 
+        for i = ap_airship.max_pos,1,-1 
         do 
             if self._passengers[i] == name then
                 self._passengers[i] = nil --clear the wrong information
@@ -62,7 +62,7 @@ local function right_click_function(self, clicker)
         else
             --first lets clean the boat slots
             --note that when it happens, the "rescue" function will lost the historic
-            for i = ap_airship.max_seats,1,-1 
+            for i = ap_airship.max_pos,1,-1 
             do 
                 if self._passengers[i] ~= nil then
                     local old_player = minetest.get_player_by_name(self._passengers[i])
@@ -161,11 +161,64 @@ local function right_click_cabin(self, clicker)
 
 
     if is_attached then
-        --shows pilot formspec
+        --shows pax formspec
         if name == ship_self.driver_name then
             return
         else
             ap_airship.pax_formspec(name)
+        end
+    end
+end
+
+local function find_chair_index(self, curr_seat)
+    for i = ap_airship.max_seats,1,-1 
+    do
+        if self._chairs[i] == curr_seat then
+            return i
+        end
+    end
+    return 0
+end
+
+local function right_click_chair(self, clicker)
+    local message = ""
+	if not clicker or not clicker:is_player() then
+		return
+	end
+
+    local name = clicker:get_player_name()
+    local ship_self = nil
+
+    local is_attached = false
+    local seat = clicker:get_attach()
+    if seat then
+        ship_attach = seat:get_attach()
+        if ship_attach then
+            ship_self = ship_attach:get_luaentity()
+            is_attached = true
+        end
+    end
+
+    if is_attached then
+        local index = ap_airship.get_passenger_seat_index(ship_self, name)
+        if index > 0 then
+            local chair_index = find_chair_index(ship_self, self.object)
+            --minetest.chat_send_all("index: "..chair_index)
+            if ship_self._passenger_is_sit[index] ==0 and chair_index then
+                local dest_pos = ship_self._chairs_pos[chair_index]
+                if dest_pos then
+                    dest_pos.y = dest_pos.y
+                    ship_self._passengers_base_pos[index] = dest_pos
+                    ship_self._passengers_base[index]:set_attach(ship_self.object,'',ship_self._passengers_base_pos[index],{x=0,y=0,z=0})
+                    if math.floor(dest_pos.z) ~= 84 and math.floor(dest_pos.z) ~= 39 then
+                        ship_self._passenger_is_sit[index] = 1
+                    else
+                        ship_self._passenger_is_sit[index] = 3
+                    end
+                end
+            else
+                ship_self._passenger_is_sit[index] = 0
+            end
         end
     end
 end
@@ -241,6 +294,32 @@ minetest.register_entity('ap_airship:cabin_interactor',{
 
 })
 
+-- and item just to run the sit function
+minetest.register_entity('ap_airship:chair_interactor',{
+    initial_properties = {
+	    physical = false,
+	    collide_with_objects=false,
+        collisionbox = {-0.3, 0, -0.3, 0.3, 1, 0.3},
+	    pointable=true,
+	    visual = "mesh",
+	    mesh = "ap_airship_stand_base.b3d",
+        textures = {"ap_airship_alpha.png",},
+	},
+    dist_moved = 0,
+	
+    on_activate = function(self,std)
+	    self.sdata = minetest.deserialize(std) or {}
+	    if self.sdata.remove then self.object:remove() end
+    end,
+	    
+    get_staticdata=function(self)
+      self.sdata.remove=true
+      return minetest.serialize(self.sdata)
+    end,
+
+    on_rightclick = right_click_chair,
+})
+
 --
 -- seat pivot
 --
@@ -272,7 +351,7 @@ minetest.register_entity("ap_airship:airship", {
         physical = true,
         collide_with_objects = true, --true,
         collisionbox = {-10, -3.5, -10, 10, 15, 10}, --{-1,0,-1, 1,0.3,1},
-        --selectionbox = {-0.6,0.6,-0.6, 0.6,1,0.6},
+        selectionbox = {-10, -3.5, -10, 10,  0, 10},
         visual = "mesh",
         backface_culling = false,
         mesh = "ap_airship_mesh.b3d",
@@ -306,8 +385,11 @@ minetest.register_entity("ap_airship:airship", {
     _energy = 1.0,--0.001,
     _boiler_pressure = 1.0, --min 155 max 310
     _is_going_up = false, --to tell the boiler to lose pressure
+    _chairs={}, --chairs obj ids
+    _chairs_pos={},
     _passengers = {}, --passengers list
-    _passengers_base = {}, --obj id
+    _passengers_base = {}, --obj ids
+    _passenger_is_sit = {}, -- 0, 1, 2, 3 or 4 ==> stand, 0, 90, 180, 270 --the sit rotation
     _passengers_base_pos = ap_airship.copy_vector({}),
     _passengers_locked = false,
     _disconnection_check_time = 0,
@@ -375,6 +457,7 @@ minetest.register_entity("ap_airship:airship", {
         ap_airship.paint2(self, self.color2)
         local pos = self.object:get_pos()
 
+        self._passenger_is_sit = ap_airship.copy_vector({[1]=0, [2]=0, [3]=0, [4]=0, [5]=0,})
         self._passengers_base = ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil,})
         self._passengers_base_pos = ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil,})
         self._passengers_base_pos = {
@@ -404,6 +487,22 @@ minetest.register_entity("ap_airship:airship", {
         self._control_interactor:set_attach(self.object,'',{x=0,y=-28,z=175},{x=0,y=0,z=0})
         self._cabin_interactor=minetest.add_entity(pos,'ap_airship:cabin_interactor')
         self._cabin_interactor:set_attach(self.object,'',{x=-6,y=-28,z=115},{x=0,y=0,z=0})
+
+        --chairs
+        self._chairs_pos = ap_airship.copy_vector({
+            [1]={x=-8.17622,y=-29,z=147}, [2]={x=8.17622,y=-29,z=147}, [3]={x=-8.17622,y=-29,z=135}, [4]={x=8.17622,y=-29,z=135}, [5]={x=8.17622,y=-29,z=123},
+            [6]={x=20.176,y=0,z=84.2029}, [7]={x=10.176,y=0,z=84.2029}, [8]={x=20.176,y=0,z=63.005}, [9]={x=10.176,y=0,z=63.005},
+            [10]={x=-20.176,y=0,z=84.2029}, [11]={x=-10.176,y=0,z=84.2029}, [12]={x=-20.176,y=0,z=63.005}, [13]={x=-10.176,y=0,z=63.005},
+            [14]={x=20.176,y=0,z=39.2029}, [15]={x=10.176,y=0,z=39.2029}, [16]={x=20.176,y=0,z=18.005}, [17]={x=10.176,y=0,z=18.005},
+            [18]={x=-20.176,y=0,z=39.2029}, [19]={x=-10.176,y=0,z=39.2029}, [20]={x=-20.176,y=0,z=18.005}, [21]={x=-10.176,y=0,z=18.005},})
+        self._chairs = ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil, [6]=nil, [7]=nil, [8]=nil, [9]=nil, [10]=nil,
+                        [11]=nil, [12]=nil, [13]=nil, [14]=nil, [15]=nil, [16]=nil, [17]=nil, [18]=nil, [19]=nil, [20]=nil, [21]=nil})
+
+        for i = 1,ap_airship.max_seats,1 
+        do
+            self._chairs[i] = minetest.add_entity(pos,'ap_airship:chair_interactor')
+            self._chairs[i]:set_attach(self.object,'',self._chairs_pos[i],{x=0,y=0,z=0})
+        end
 
         --animation load - stoped
         self.object:set_animation({x = 1, y = 47}, 0, 0, true)
@@ -645,7 +744,7 @@ minetest.register_entity("ap_airship:airship", {
         if is_attached == false then
             local i = 0
             local has_passengers = false
-            for i = ap_airship.max_seats,1,-1 
+            for i = ap_airship.max_pos,1,-1 
             do 
                 if self._passengers[i] ~= nil then
                     has_passengers = true

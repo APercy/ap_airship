@@ -233,21 +233,31 @@ function ap_airship.move_persons(self)
                 --minetest.chat_send_all("pass: "..dump(self._passengers[i]))
                 --the rest of the passengers
                 if player then
-                    local result_pos = get_result_pos(self, player, i)
-                    local y_rot = 0
-                    if result_pos then
-                        y_rot = result_pos.y -- the only field that returns a rotation
-                        local new_pos = ap_airship.copy_vector(self._passengers_base_pos[i])
-                        new_pos.x = new_pos.x - result_pos.z
-                        new_pos.z = new_pos.z - result_pos.x
-                        --minetest.chat_send_all(dump(new_pos))
-                        local pos_d = ap_airship.navigate_deck(self._passengers_base_pos[i], new_pos, player)
-                        --minetest.chat_send_all(dump(height))
-                        self._passengers_base_pos[i] = ap_airship.copy_vector(pos_d)
-                        self._passengers_base[i]:set_attach(self.object,'',self._passengers_base_pos[i],{x=0,y=0,z=0})
+                    if self._passenger_is_sit[i] == 0 then
+                        local result_pos = get_result_pos(self, player, i)
+                        local y_rot = 0
+                        if result_pos then
+                            y_rot = result_pos.y -- the only field that returns a rotation
+                            local new_pos = ap_airship.copy_vector(self._passengers_base_pos[i])
+                            new_pos.x = new_pos.x - result_pos.z
+                            new_pos.z = new_pos.z - result_pos.x
+                            --minetest.chat_send_all(dump(new_pos))
+                            local pos_d = ap_airship.navigate_deck(self._passengers_base_pos[i], new_pos, player)
+                            --minetest.chat_send_all(dump(height))
+                            self._passengers_base_pos[i] = ap_airship.copy_vector(pos_d)
+                            self._passengers_base[i]:set_attach(self.object,'',self._passengers_base_pos[i],{x=0,y=0,z=0})
+                        end
+                        --minetest.chat_send_all(dump(self._passengers_base_pos[i]))
+                        player:set_attach(self._passengers_base[i], "", {x = 0, y = 0, z = 0}, {x = 0, y = y_rot, z = 0})
+                    else
+                        local y_rot = 0
+                        if self._passenger_is_sit[i] == 1 then y_rot = 0 end
+                        if self._passenger_is_sit[i] == 2 then y_rot = 90 end
+                        if self._passenger_is_sit[i] == 3 then y_rot = 180 end
+                        if self._passenger_is_sit[i] == 4 then y_rot = 270 end
+                        player:set_attach(self._passengers_base[i], "", {x = 0, y = 3.6, z = 0}, {x = 0, y = y_rot, z = 0})
+                        airutils.sit(player)
                     end
-                    --minetest.chat_send_all(dump(self._passengers_base_pos[i]))
-                    player:set_attach(self._passengers_base[i], "", {x = 0, y = 0, z = 0}, {x = 0, y = y_rot, z = 0})
                 else
                     --self._passengers[i] = nil
                 end

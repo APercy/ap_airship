@@ -8,7 +8,8 @@ ap_airship.rudder_limit = 30
 ap_airship.iddle_rotation = 50
 ap_airship.max_engine_acc = 1.5
 ap_airship.max_speed = 8
-ap_airship.max_seats = 2
+ap_airship.max_pos = 5
+ap_airship.max_seats = 21
 ap_airship.pilot_base_pos = {x=0.0,y=-29,z=170}
 ap_airship.passenger_pos = {
     [1] = {x=0.0,y=0,z=60},
