@@ -30,9 +30,9 @@ function ap_airship.pilot_formspec(name)
     local anchor = "false"
     if ent.anchored == true then anchor = "true" end
 
-	basic_form = basic_form.."button[1,1.0;4,1;turn_on;Start/Stop the fire]"
+	basic_form = basic_form.."button[1,1.0;4,1;turn_on;Start/Stop engines]"
     basic_form = basic_form.."button[1,3.0;4,1;inventory;Open inventory]"
-    basic_form = basic_form.."button[1,4.0;4,1;manual;Show Manual Menu]"
+    --basic_form = basic_form.."button[1,4.0;4,1;manual;Show Manual Menu]"
 
     basic_form = basic_form.."checkbox[1,5.6;take_control;Take the Control;"..take_control.."]"
     basic_form = basic_form.."checkbox[1,6.2;anchor;Anchor away;"..anchor.."]"
@@ -73,7 +73,7 @@ function ap_airship.logo_formspec(name)
     basic_form = basic_form.."dropdown[1,1.2;4,0.6;logo;"..logolist..";0;false]"
     basic_form = basic_form.."button[1,2.2;4,0.8;set_logo;Set Airship Logo]"
 
-    minetest.show_formspec(name, "ap_airship:logo_main", basic_form)
+    --minetest.show_formspec(name, "ap_airship:logo_main", basic_form)
 end
 
 function ap_airship.owner_formspec(name)
