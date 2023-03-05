@@ -204,7 +204,7 @@ local function right_click_chair(self, clicker)
         if index > 0 then
             local chair_index = find_chair_index(ship_self, self.object)
             --minetest.chat_send_all("index: "..chair_index)
-            if ship_self._passenger_is_sit[index] ==0 and chair_index then
+            if ship_self._passenger_is_sit[index] == 0 and chair_index then
                 local dest_pos = ship_self._chairs_pos[chair_index]
                 if dest_pos then
                     dest_pos.y = dest_pos.y

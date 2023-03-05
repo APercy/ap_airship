@@ -68,6 +68,7 @@ local function do_attach(self, player, slot)
         self._passengers[slot] = name
         player:set_attach(self._passengers_base[slot], "", {x = 0, y = 0, z = 0}, {x = 0, y = 0, z = 0})
         player_api.player_attached[name] = true
+        self._passenger_is_sit[slot] = 0
     end
 end
 
