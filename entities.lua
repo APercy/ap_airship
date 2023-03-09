@@ -218,7 +218,7 @@ local function right_click_chair(self, clicker)
                 end
             else
                 ship_self._passenger_is_sit[index] = 0
-                player_api.set_animation(clicker, "stand")
+                player_api.set_animation(clicker, "walk", 30)
             end
         end
     end
