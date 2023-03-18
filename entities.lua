@@ -321,6 +321,47 @@ minetest.register_entity('ap_airship:chair_interactor',{
     on_rightclick = right_click_chair,
 })
 
+minetest.register_entity('ap_airship:ent_collider',{
+    initial_properties = {
+	    physical = true,
+	    collide_with_objects=true,
+        collisionbox = {-2, 0, -2, 2, 3, 2},
+	    visual = "mesh",
+	    mesh = "ap_airship_stand_base.b3d",
+        textures = {"ap_airship_alpha.png",},
+        pointable=false,
+	},
+    dist_moved = 0,
+    max_hp = 65535,
+	
+    on_activate = function(self,std)
+	    self.sdata = minetest.deserialize(std) or {}
+	    if self.sdata.remove then self.object:remove() end
+    end,
+	    
+    get_staticdata=function(self)
+      self.sdata.remove=true
+      return minetest.serialize(self.sdata)
+    end,
+
+    on_punch = function(self, puncher, ttime, toolcaps, dir, damage)
+        --minetest.chat_send_all("punch")
+        if not puncher or not puncher:is_player() then
+            return
+        end
+    end,
+
+    on_step = function(self,dtime,colinfo)
+	    self.dtime = math.min(dtime,0.2)
+	    self.colinfo = colinfo
+	    
+	    if colinfo then 
+		    self.isonground = colinfo.touching_ground
+            --inetest.chat_send_all("touching ground: "..self.isonground)
+	    end
+    end,
+})
+
 --
 -- seat pivot
 --
@@ -457,6 +498,12 @@ minetest.register_entity("ap_airship:airship", {
         ap_airship.paint(self, self.color)
         ap_airship.paint2(self, self.color2)
         local pos = self.object:get_pos()
+
+        --cabin collider
+        self._cabin=minetest.add_entity(pos,'ap_airship:ent_collider')
+        self._cabin:set_attach(self.object,'',{x=0,y=-28,z=118},{x=0,y=0,z=0})
+        self._cabin2=minetest.add_entity(pos,'ap_airship:ent_collider')
+        self._cabin2:set_attach(self.object,'',{x=0,y=-28,z=158},{x=0,y=0,z=0})
 
         --passengers positions
         self._passenger_is_sit = ap_airship.copy_vector({})
