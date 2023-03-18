@@ -8,7 +8,7 @@ ap_airship.rudder_limit = 30
 ap_airship.iddle_rotation = 50
 ap_airship.max_engine_acc = 1.5
 ap_airship.max_speed = 8
-ap_airship.max_pos = 5
+ap_airship.max_pos = 12
 ap_airship.max_seats = 21
 ap_airship.pilot_base_pos = {x=0.0,y=-29,z=170}
 ap_airship.passenger_pos = {
@@ -17,6 +17,13 @@ ap_airship.passenger_pos = {
     [3] = {x=32,y=0,z=20},
     [4] = {x=-32,y=0,z=80},
     [5] = {x=32,y=0,z=80},
+    [6] = {x=0.0,y=0,z=50},
+    [7] = {x=-32,y=0,z=30},
+    [8] = {x=32,y=0,z=30},
+    [9] = {x=-32,y=0,z=70},
+    [10] = {x=32,y=0,z=70},
+    [11] = {x=0.0,y=0,z=40},
+    [12] = {x=0.0,y=0,z=30},
     }
 
 ap_airship.canvas_texture = "wool_white.png^[colorize:#f4e7c1:128"
