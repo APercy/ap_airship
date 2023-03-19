@@ -521,7 +521,7 @@ minetest.register_entity("ap_airship:airship", {
         self._control_interactor=minetest.add_entity(pos,'ap_airship:control_interactor')
         self._control_interactor:set_attach(self.object,'',{x=0,y=-28,z=175},{x=0,y=0,z=0})
         self._cabin_interactor=minetest.add_entity(pos,'ap_airship:cabin_interactor')
-        self._cabin_interactor:set_attach(self.object,'',{x=-6,y=-28,z=115},{x=0,y=0,z=0})
+        self._cabin_interactor:set_attach(self.object,'',{x=-7,y=-28,z=115},{x=0,y=0,z=0})
 
         --chairs
         self._chairs_pos = ap_airship.copy_vector({
