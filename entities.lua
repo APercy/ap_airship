@@ -393,7 +393,7 @@ minetest.register_entity("ap_airship:airship", {
         physical = true,
         collide_with_objects = true, --true,
         collisionbox = {-10, -3.5, -10, 10, 15, 10}, --{-1,0,-1, 1,0.3,1},
-        selectionbox = {-10, -3.5, -10, 10,  0, 10},
+        selectionbox = {-2, -3.5, -2, 2,  0, 2},
         visual = "mesh",
         backface_culling = false,
         mesh = "ap_airship_mesh.b3d",
