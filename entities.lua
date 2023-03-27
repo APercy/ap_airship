@@ -595,11 +595,15 @@ minetest.register_entity("ap_airship:airship", {
         local hull_direction = minetest.yaw_to_dir(yaw)
         local nhdir = {x=hull_direction.z,y=0,z=-hull_direction.x}        -- lateral unit vector
         local velocity = self.object:get_velocity()
-
+        local wind_speed = airutils.get_wind(curr_pos, 0.15)
+        
         local longit_speed = ap_airship.dot(velocity,hull_direction)
+        
         self._longit_speed = longit_speed --for anchor verify
-        local longit_drag = vector.multiply(hull_direction,longit_speed*
-                longit_speed*LONGIT_DRAG_FACTOR*-1*ap_airship.sign(longit_speed))
+        local relative_longit_speed = ap_airship.dot(vector.add(velocity, wind_speed), hull_direction)
+        
+        local longit_drag = vector.multiply(hull_direction,relative_longit_speed*
+                relative_longit_speed*LONGIT_DRAG_FACTOR*-1*ap_airship.sign(relative_longit_speed))
         local later_speed = ap_airship.dot(velocity,nhdir)
         local later_drag = vector.multiply(nhdir,later_speed*later_speed*
                 LATER_DRAG_FACTOR*-1*ap_airship.sign(later_speed))
@@ -626,7 +630,7 @@ minetest.register_entity("ap_airship:airship", {
         end
 
         if self.owner == "" then return end
-        --[[if longit_speed == 0 and is_flying == false and is_attached == false and self._engine_running == false then
+        --[[if relative_longit_speed == 0 and is_flying == false and is_attached == false and self._engine_running == false then
             self.object:move_to(curr_pos)
             --self.object:set_acceleration({x=0,y=airutils.gravity,z=0})
             return
@@ -635,14 +639,14 @@ minetest.register_entity("ap_airship:airship", {
         --detect collision
         ap_airship.testDamage(self, vel, curr_pos)
 
-        accel = ap_airship.control(self, self.dtime, hull_direction, longit_speed, accel) or vel
+        accel = ap_airship.control(self, self.dtime, hull_direction, relative_longit_speed, accel) or vel
 
         --get disconnected players
         ap_airship.rescueConnectionFailedPassengers(self)
 
         local turn_rate = math.rad(9)
-        newyaw = yaw + self.dtime*(1 - 1 / (math.abs(longit_speed) + 1)) *
-            self._rudder_angle / 30 * turn_rate * ap_airship.sign(longit_speed)
+        newyaw = yaw + self.dtime*(1 - 1 / (math.abs(relative_longit_speed) + 1)) *
+            self._rudder_angle / 30 * turn_rate * ap_airship.sign(relative_longit_speed)
 
         ap_airship.engine_step(self, accel)
         
@@ -655,7 +659,7 @@ minetest.register_entity("ap_airship:airship", {
         local newroll = 0
         if self._last_roll ~= nil then newroll = self._last_roll end
         --oscilation when stoped
-        if longit_speed == 0 then
+        if relative_longit_speed == 0 then
             local time_correction = (self.dtime/ap_airship.ideal_step)
             --stoped
             if self._roll_state == nil then
@@ -680,18 +684,18 @@ minetest.register_entity("ap_airship:airship", {
         --minetest.chat_send_all('newroll: '.. newroll)
         ---------------------------------
         -- end roll
-        local wind = airutils.get_wind(curr_pos, 0.15)
-        local wind_yaw = minetest.dir_to_yaw(wind)
-        --minetest.chat_send_all("x: "..wind.x.. " - z: "..wind.z.." - yaw: "..math.deg(wind_yaw).. " - orig: "..wind_yaw)
+        
+        local wind_yaw = minetest.dir_to_yaw(wind_speed)
+        --minetest.chat_send_all("x: "..wind_speed.x.. " - z: "..wind_speed.z.." - yaw: "..math.deg(wind_yaw).. " - orig: "..wind_yaw)
 
         if self.anchored == false and self.isonground == false then
-            accel = vector.add(accel, wind)
+            accel = vector.add(accel, wind_speed)
         else
             accel = vector.new()
         end
         accel.y = accel_y
 
-        newpitch = velocity.y * math.rad(1.5) * (longit_speed/3)
+        newpitch = velocity.y * math.rad(1.5) * (relative_longit_speed/3)
 
 		local noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-4.5}))
 	    if (noded and noded.drawtype ~= 'airlike') or self.isonground then
