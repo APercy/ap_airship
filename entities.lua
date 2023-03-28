@@ -601,6 +601,7 @@ minetest.register_entity("ap_airship:airship", {
         
         self._longit_speed = longit_speed --for anchor verify
         local relative_longit_speed = ap_airship.dot(vector.add(velocity, wind_speed), hull_direction)
+        self._relative_longit_speed = relative_longit_speed
         
         local longit_drag = vector.multiply(hull_direction,relative_longit_speed*
                 relative_longit_speed*LONGIT_DRAG_FACTOR*-1*ap_airship.sign(relative_longit_speed))
