@@ -1,7 +1,8 @@
 Minetest 5.4 mod: Airship
 ========================================
 
-This mod implements an airship for minetest.
+This mod implements an airship for minetest. This airship is affected by the wind. The wind better works
+with Climate API
 THIS IS VERY EXPERIMENTAL AND HAVE A LOT OF MISSING FEATURES. AND I KNOW IT
 I will remove the above text in future, I hope.
 
