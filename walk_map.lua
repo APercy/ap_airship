@@ -217,7 +217,7 @@ end
 function ap_airship.move_persons(self)
     --self._passenger = nil
     if self.object == nil then return end
-    for i = 5,1,-1 
+    for i = ap_airship.max_pos,1,-1 
     do
         local player = nil
         if self._passengers[i] then player = minetest.get_player_by_name(self._passengers[i]) end
