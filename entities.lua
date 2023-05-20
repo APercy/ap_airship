@@ -610,7 +610,6 @@ minetest.register_entity("ap_airship:airship", {
                 LATER_DRAG_FACTOR*-1*ap_airship.sign(later_speed))
         local accel = vector.add(longit_drag,later_drag)
 
-        local vel = self.object:get_velocity()
         local curr_pos = self.object:get_pos()
         self._last_pos = curr_pos
         self.object:move_to(curr_pos)
@@ -638,9 +637,9 @@ minetest.register_entity("ap_airship:airship", {
         end]]--
 
         --detect collision
-        ap_airship.testDamage(self, vel, curr_pos)
+        ap_airship.testDamage(self, velocity, curr_pos)
 
-        accel = ap_airship.control(self, self.dtime, hull_direction, relative_longit_speed, accel) or vel
+        accel = ap_airship.control(self, self.dtime, hull_direction, relative_longit_speed, accel) or velocity
 
         --get disconnected players
         ap_airship.rescueConnectionFailedPassengers(self)
