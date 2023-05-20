@@ -482,7 +482,7 @@ minetest.register_entity("ap_airship:airship", {
             self.hull_integrity = data.stored_hull_integrity
             self.item = data.stored_item
             self._inv_id = data.stored_inv_id
-            self._passengers = data.stored_passengers or ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil,})
+            self._passengers = data.stored_passengers or ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil, [6]=nil, [7]=nil, [8]=nil, [9]=nil, [10]=nil, [11]=nil, [12]=nil})
             self._passengers_locked = data.stored_passengers_locked
             --minetest.debug("loaded: ", self._energy)
             local properties = self.object:get_properties()

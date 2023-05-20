@@ -137,7 +137,7 @@ minetest.register_craftitem("ap_airship:airship", {
 		local airship = minetest.add_entity(pointed_pos, "ap_airship:airship")
 		if airship and placer then
             local ent = airship:get_luaentity()
-            ent._passengers = ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil,})
+            ent._passengers = ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil, [6]=nil, [7]=nil, [8]=nil, [9]=nil, [10]=nil, [11]=nil, [12]=nil})
             --minetest.chat_send_all('passengers: '.. dump(ent._passengers))
             local owner = placer:get_player_name()
             ent.owner = owner
