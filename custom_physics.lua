@@ -66,6 +66,7 @@ function ap_airship.physics(self)
     self.water_drag = 0.1
     self.object:move_to(self.object:get_pos())
     local time_correction = (self.dtime/ap_airship.ideal_step)
+    if time_correction < 1 then time_correction = 1 end
     local y_accel = self._baloon_buoyancy*time_correction
     --minetest.chat_send_all(y_accel)
     local max_y_acell = 0.3
