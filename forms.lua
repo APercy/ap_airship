@@ -108,7 +108,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		    end
 		    if fields.take then
                 ent._at_control = true
-                for i = 5,1,-1 
+                for i = #ap_airship.passenger_pos,1,-1 
                 do 
                     if ent._passengers[i] == name then
                         ent._passengers_base_pos[i] = vector.new(ap_airship.pilot_base_pos)
@@ -180,7 +180,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
                 if fields.take_control == "true" then
                     if ent.driver_name == nil or ent.driver_name == "" then
                         ent._at_control = true
-                        for i = 5,1,-1 
+                        for i = #ap_airship.passenger_pos,1,-1 
                         do 
                             if ent._passengers[i] == name then
                                 ent._passengers_base_pos[i] = vector.new(ap_airship.pilot_base_pos)
@@ -448,7 +448,7 @@ minetest.register_chatcommand("airship_eject", {
                 local entity = seat:get_luaentity()
                 if entity then
                     if entity.name == "ap_airship:airship" then
-                        for i = 5,1,-1 
+                        for i = #ap_airship.passenger_pos,1,-1 
                         do 
                             if entity._passengers[i] == name then
                                 ap_airship.dettach_pax(entity, player, "l")
