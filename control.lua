@@ -192,8 +192,10 @@ function ap_airship.buoyancy_auto_correction(self, dtime)
     --minetest.chat_send_player(self.driver_name, "antes: " .. self._baloon_buoyancy)
     if self._baloon_buoyancy > 0 then factor = -1 end
     local time_correction = (dtime/ap_airship.ideal_step)
+    if time_correction < 1 then time_correction = 1 end
     local intensity = 0.001
     local correction = (intensity*factor) * time_correction
+    if math.abs(correction) > 0.005 then correction = 0.005 * math.sign(correction) end
     --minetest.chat_send_player(self.driver_name, correction)
     local before_correction = self._baloon_buoyancy
     local new_baloon_buoyancy = self._baloon_buoyancy + correction
