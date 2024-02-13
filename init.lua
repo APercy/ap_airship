@@ -35,6 +35,7 @@ ap_airship.rotor_texture = "ap_airship_helice.png"
 ap_airship.textures = {
             ap_airship.grey_texture, --"ap_airship_painting.png", --balao
             ap_airship.metal_texture, --ponteira nariz
+            "airutils_name_canvas.png",
             "ap_airship_brown.png", --mobilia
             ap_airship.metal_texture, --mobilia
             ap_airship.black_texture, -- corpo da bussola

@@ -392,7 +392,7 @@ minetest.register_entity("ap_airship:airship", {
     initial_properties = {
         physical = true,
         collide_with_objects = true, --true,
-        collisionbox = {-10, -3.5, -10, 10, 15, 10}, --{-1,0,-1, 1,0.3,1},
+        collisionbox = {-10, -4.1, -10, 10, 15, 10}, --{-1,0,-1, 1,0.3,1},
         selectionbox = {-2, -3.5, -2, 2,  0, 2},
         visual = "mesh",
         backface_culling = false,
@@ -437,6 +437,9 @@ minetest.register_entity("ap_airship:airship", {
     _disconnection_check_time = 0,
     _inv = nil,
     _inv_id = "",
+    _name_color = 0,
+    _name_hor_aligment = 3.0,
+
     item = "ap_airship:airship",
 
     get_staticdata = function(self) -- unloaded/unloads ... is now saved
@@ -455,6 +458,7 @@ minetest.register_entity("ap_airship:airship", {
             stored_inv_id = self._inv_id,
             stored_passengers = self._passengers, --passengers list
             stored_passengers_locked = self._passengers_locked,
+            stored_ship_name = self._ship_name,
         })
     end,
 
@@ -484,6 +488,7 @@ minetest.register_entity("ap_airship:airship", {
             self._inv_id = data.stored_inv_id
             self._passengers = data.stored_passengers or ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil, [6]=nil, [7]=nil, [8]=nil, [9]=nil, [10]=nil, [11]=nil, [12]=nil})
             self._passengers_locked = data.stored_passengers_locked
+            self._ship_name = data.stored_ship_name
             --minetest.debug("loaded: ", self._energy)
             local properties = self.object:get_properties()
             properties.infotext = data.stored_owner .. " nice airship"
@@ -580,7 +585,7 @@ minetest.register_entity("ap_airship:airship", {
 	    end
 	    
 	    self.lastvelocity = self.object:get_velocity()
-	    self.time_total=self.time_total+self.dtime
+	    self.time_total=(self.time_total or 0)+self.dtime
     end,
     logic = function(self)
         
@@ -713,9 +718,9 @@ minetest.register_entity("ap_airship:airship", {
         self.object:set_bone_position("timao", {x=0,y=-22.562,z=176.018}, {x=0,y=0,z=self._rudder_angle*8})
         self.object:set_bone_position("compass_axis", {x=0,y=-21.8,z=178.757}, {x=0, y=S_angle, z=0})
 
-		noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-3.7}))
+		noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-4.5}))
 	    if (noded and noded.drawtype ~= 'airlike') or self.isonground then
-            self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=-18,y=0,z=0})
+            self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=-28,y=0,z=0})
         else
             self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=0,y=0,z=0})
         end
