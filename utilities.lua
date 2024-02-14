@@ -278,13 +278,12 @@ end
 function ap_airship.paint(self, colstr)
     if colstr then
         self.color = colstr
-        paint(self, true)
     end
 end
 function ap_airship.paint2(self, colstr)
     if colstr then
         self.color2 = colstr
-        paint(self)
+        paint(self, true)
     end
 end
 
