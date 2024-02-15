@@ -57,6 +57,19 @@ function ap_airship.pax_formspec(name)
     minetest.show_formspec(name, "ap_airship:passenger_main", basic_form)
 end
 
+function ap_airship.external_attach(name)
+    local basic_form = table.concat({
+        "formspec_version[3]",
+        "size[6,3]",
+	}, "")
+
+    basic_form = basic_form.."label[1,1.0;Attach Outside:]"
+    basic_form = basic_form.."button[1,1.2;2,1;attach;Attach]"
+    basic_form = basic_form.."button[3,1.2;2,1;dettach;Dettach]"
+
+    minetest.show_formspec(name, "ap_airship:attach_main", basic_form)
+end
+
 function ap_airship.logo_formspec(name)
     local basic_form = table.concat({
         "formspec_version[3]",
@@ -143,7 +156,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         end
         minetest.close_formspec(name, "ap_airship:passenger_main")
 	end
-    if formname == "ap_airship:logo_main" then
+    if formname == "ap_airship:attach_main" then
         local name = player:get_player_name()
         local plane_obj = ap_airship.getPlaneFromPlayer(player)
         if plane_obj == nil then
@@ -152,8 +165,11 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         end
         local ent = plane_obj:get_luaentity()
         if ent then
-		    if fields.logo or fields.set_logo then
-                ap_airship.set_logo(ent, fields.logo)
+		    if fields.attach then
+                airutils.simple_external_attach(ent, ent._simple_attach_pos, "albatros_d5:albatros_d5", 22)
+		    end
+		    if fields.dettach then
+                airutils.dettach_entity(ent)
 		    end
         end
         minetest.close_formspec(name, "ap_airship:logo_main")
@@ -455,6 +471,33 @@ minetest.register_chatcommand("airship_eject", {
                                 break
                             end
                         end
+                    else
+			            minetest.chat_send_player(name,colorstring)
+                    end
+                end
+            end
+		else
+			minetest.chat_send_player(name,colorstring)
+		end
+	end
+})
+
+minetest.register_chatcommand("external_attach_menu", {
+	params = "",
+	description = "Opens the panel to attach or dettach an external object",
+	privs = {interact = true},
+	func = function(name, param)
+        local colorstring = core.colorize('#ff0000', " >>> you are not inside a airship")
+        local player = minetest.get_player_by_name(name)
+        local attached_to = player:get_attach()
+
+		if attached_to ~= nil then
+            local seat = attached_to:get_attach()
+            if seat ~= nil then
+                local entity = seat:get_luaentity()
+                if entity then
+                    if entity.name == "ap_airship:airship" then
+                        ap_airship.external_attach(name)
                     else
 			            minetest.chat_send_player(name,colorstring)
                     end

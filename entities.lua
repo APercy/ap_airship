@@ -393,7 +393,7 @@ minetest.register_entity("ap_airship:airship", {
         physical = true,
         collide_with_objects = true, --true,
         collisionbox = {-10, -4.1, -10, 10, 15, 10}, --{-1,0,-1, 1,0.3,1},
-        selectionbox = {-2, -3.5, -2, 2,  0, 2},
+        selectionbox = {-2, -4.1, -2, 2,  0, 2},
         visual = "mesh",
         backface_culling = false,
         mesh = "ap_airship_mesh.b3d",
@@ -416,6 +416,7 @@ minetest.register_entity("ap_airship:airship", {
     physics = ap_airship.physics,
     hull_integrity = nil,
     owner = "",
+    _vehicle_custom_data = {},
     _shared_owners = {},
     _engine_running = false,
     _power_lever = 0,
@@ -439,6 +440,7 @@ minetest.register_entity("ap_airship:airship", {
     _inv_id = "",
     _name_color = 0,
     _name_hor_aligment = 3.0,
+    _simple_attach_pos = {x=0,y=-25,z=-40},
 
     item = "ap_airship:airship",
 
@@ -458,6 +460,7 @@ minetest.register_entity("ap_airship:airship", {
             stored_inv_id = self._inv_id,
             stored_passengers = self._passengers, --passengers list
             stored_passengers_locked = self._passengers_locked,
+            stored_vehicle_custom_data = self._vehicle_custom_data or {},
             stored_ship_name = self._ship_name,
         })
     end,
@@ -489,6 +492,15 @@ minetest.register_entity("ap_airship:airship", {
             self._passengers = data.stored_passengers or ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil, [6]=nil, [7]=nil, [8]=nil, [9]=nil, [10]=nil, [11]=nil, [12]=nil})
             self._passengers_locked = data.stored_passengers_locked
             self._ship_name = data.stored_ship_name
+
+            local custom_data = data.stored_vehicle_custom_data or nil
+            if custom_data then
+                self._vehicle_custom_data = custom_data
+            else
+                -- o macete aqui eh inicializar mesmo que não exista no escopo da entity
+                self._vehicle_custom_data = {} --initialize it
+            end
+
             --minetest.debug("loaded: ", self._energy)
             local properties = self.object:get_properties()
             properties.infotext = data.stored_owner .. " nice airship"
@@ -500,6 +512,7 @@ minetest.register_entity("ap_airship:airship", {
             colstr = "blue"
             self.color = colstr
         end
+
         ap_airship.paint(self, self.color)
         ap_airship.paint2(self, self.color2)
         local pos = self.object:get_pos()
@@ -564,6 +577,7 @@ minetest.register_entity("ap_airship:airship", {
         end
 
         ap_airship.engine_step(self, 0)
+        airutils.restore_external_attach(self)
     end,
 
     on_step = function(self,dtime,colinfo)

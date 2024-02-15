@@ -134,7 +134,7 @@ minetest.register_craftitem("ap_airship:airship", {
         --local node_below = minetest.get_node(pointed_pos).name
         --local nodedef = minetest.registered_nodes[node_below]
         
-		pointed_pos.y=pointed_pos.y+4
+		pointed_pos.y=pointed_pos.y+4.6
 		local airship = minetest.add_entity(pointed_pos, "ap_airship:airship")
 		if airship and placer then
             local ent = airship:get_luaentity()
