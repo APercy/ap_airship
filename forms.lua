@@ -60,12 +60,15 @@ end
 function ap_airship.external_attach(name)
     local basic_form = table.concat({
         "formspec_version[3]",
-        "size[6,3]",
+        "size[6,4]",
 	}, "")
 
+    local entities = "albatros_d5:albatros_d5,sopwith_f1_camel:sopwith_f1_camel,supercub:supercub"
+
     basic_form = basic_form.."label[1,1.0;Attach Outside:]"
-    basic_form = basic_form.."button[1,1.2;2,1;attach;Attach]"
-    basic_form = basic_form.."button[3,1.2;2,1;dettach;Dettach]"
+    basic_form = basic_form.."dropdown[1,1.6;4,0.6;entity;"..entities..";1;false]"
+    basic_form = basic_form.."button[1,2.4;2,1;attach;Attach]"
+    basic_form = basic_form.."button[3,2.4;2,1;dettach;Dettach]"
 
     minetest.show_formspec(name, "ap_airship:attach_main", basic_form)
 end
@@ -166,7 +169,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         local ent = plane_obj:get_luaentity()
         if ent then
 		    if fields.attach then
-                airutils.simple_external_attach(ent, ent._simple_attach_pos, "albatros_d5:albatros_d5", 22)
+                airutils.simple_external_attach(ent, ent._simple_attach_pos, fields.entity, 22)
 		    end
 		    if fields.dettach then
                 airutils.dettach_entity(ent)
