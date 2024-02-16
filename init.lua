@@ -50,6 +50,7 @@ ap_airship.textures = {
             ap_airship.grey_texture, --interior cabine
             "default_ladder_steel.png", --escada
             ap_airship.white_texture, --interior cabine 2
+            "ap_airship_walls.png",
             "ap_airship_glass_2.png", --vidros do deck superior
             ap_airship.grey_texture, -- "ap_airship_painting.png", --motor
             ap_airship.grey_texture, --"ap_airship_painting.png", --cabine
