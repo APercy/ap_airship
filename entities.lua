@@ -170,6 +170,63 @@ local function right_click_cabin(self, clicker)
     end
 end
 
+local function right_click_exit(self, clicker)
+    local message = ""
+	if not clicker or not clicker:is_player() then
+		return
+	end
+
+    local name = clicker:get_player_name()
+    local ship_self = nil
+
+    local is_attached = false
+    local seat = clicker:get_attach()
+    if seat then
+        ship_attach = seat:get_attach()
+        if ship_attach then
+            ship_self = ship_attach:get_luaentity()
+            is_attached = true
+        end
+    end
+
+    if is_attached then
+        local ent, obj = airutils.get_attached_entity(ship_self)
+        if ent and obj then
+            local name = clicker:get_player_name()
+            if ent._inv_id and ent._seats then --to check if is one of my puppies
+                local can_enter = false
+                --check first if it is the owner
+                if not ent.driver_name then
+                    if ent._needed_licence then
+                        local can_fly = minetest.check_player_privs(clicker, ent._needed_licence)
+                        if not can_fly then
+                            minetest.chat_send_player(name, core.colorize('#ff0000', S(' >>> You need the priv') .. '"'..ent._needed_licence..'" ' .. S('to fly this plane.')))
+                            return
+                        end
+                    end
+                    if ent.owner == name or minetest.check_player_privs(clicker, {protection_bypass=true}) then can_enter = true end
+                else
+                    local max_seats = table.getn(ent._seats)
+                    local count = 1
+                    for i = 2,max_seats do
+                        if ent._passengers[i] then
+                            count = count + 1
+                        end
+                    end
+                    --minetest.chat_send_all("count: "..count.." - seats: "..max_seats)
+                    if count < max_seats then can_enter = true end
+                end
+                if can_enter then
+                    ap_airship.dettach_pax(ship_self, clicker, "c")
+                    airutils.on_rightclick(ent, clicker)
+                end
+            end
+        else
+            ap_airship.pax_formspec(name)
+        end
+    end
+end
+
 local function find_chair_index(self, curr_seat)
     for i = ap_airship.max_seats,1,-1 
     do
@@ -292,6 +349,39 @@ minetest.register_entity('ap_airship:cabin_interactor',{
     end,
 
     on_rightclick = right_click_cabin,
+
+})
+
+minetest.register_entity('ap_airship:exit_interactor',{
+    initial_properties = {
+	    physical = true,
+	    collide_with_objects=true,
+        collisionbox = {-0.5, 0, -0.5, 0.5, 3, 0.5},
+	    visual = "mesh",
+	    mesh = "ap_airship_stand_base.b3d",
+        textures = {"ap_airship_alpha.png",},
+	},
+    dist_moved = 0,
+    max_hp = 65535,
+	
+    on_activate = function(self,std)
+	    self.sdata = minetest.deserialize(std) or {}
+	    if self.sdata.remove then self.object:remove() end
+    end,
+	    
+    get_staticdata=function(self)
+      self.sdata.remove=true
+      return minetest.serialize(self.sdata)
+    end,
+
+    on_punch = function(self, puncher, ttime, toolcaps, dir, damage)
+        --minetest.chat_send_all("punch")
+        if not puncher or not puncher:is_player() then
+            return
+        end
+    end,
+
+    on_rightclick = right_click_exit,
 
 })
 
@@ -540,6 +630,8 @@ minetest.register_entity("ap_airship:airship", {
         self._control_interactor:set_attach(self.object,'',{x=0,y=-28,z=175},{x=0,y=0,z=0})
         self._cabin_interactor=minetest.add_entity(pos,'ap_airship:cabin_interactor')
         self._cabin_interactor:set_attach(self.object,'',{x=-7,y=-28,z=115},{x=0,y=0,z=0})
+        self._cabin_interactor=minetest.add_entity(pos,'ap_airship:exit_interactor')
+        self._cabin_interactor:set_attach(self.object,'',{x=0,y=0,z=-120},{x=0,y=0,z=0})
 
         --chairs
         self._chairs_pos = ap_airship.copy_vector({

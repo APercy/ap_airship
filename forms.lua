@@ -51,8 +51,7 @@ function ap_airship.pax_formspec(name)
 	}, "")
 
     basic_form = basic_form.."label[1,1.0;Disembark:]"
-    basic_form = basic_form.."button[1,1.2;2,1;disembark_l;<< Left]"
-    basic_form = basic_form.."button[3,1.2;2,1;disembark_r;Right >>]"
+    basic_form = basic_form.."button[1,1.2;4,1;disembark_c;Click to disembark]"
 
     minetest.show_formspec(name, "ap_airship:passenger_main", basic_form)
 end
@@ -150,11 +149,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         end
         local ent = plane_obj:get_luaentity()
         if ent then
-		    if fields.disembark_l then
-                ap_airship.dettach_pax(ent, player, "l")
-		    end
-		    if fields.disembark_r then
-                ap_airship.dettach_pax(ent, player, "r")
+		    if fields.disembark_c then
+                ap_airship.dettach_pax(ent, player, "c")
 		    end
         end
         minetest.close_formspec(name, "ap_airship:passenger_main")

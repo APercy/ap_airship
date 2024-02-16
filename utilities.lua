@@ -182,6 +182,7 @@ end
 
 function ap_airship.dettach_pax(self, player, side)
     side = side or "r"
+    if not self._passengers then return end
     if player then
         local name = player:get_player_name() --self._passenger
         ap_airship.remove_hud(player)
@@ -211,6 +212,10 @@ function ap_airship.dettach_pax(self, player, side)
             end
 
             local move = 5
+            if side == "c" then
+                direction = direction - math.rad(90)
+                move = 1
+            end
             pos.x = pos.x + move * math.cos(direction)
             pos.z = pos.z + move * math.sin(direction)
             if self.isinliquid then
