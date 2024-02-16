@@ -101,8 +101,13 @@ function ap_airship.passengers_deck_map(pos, dpos)
         new_pos.x = ap_airship.clamp(new_pos.x, -8.42, -2)
     else
         --limiting upper deck
-        new_pos.z = ap_airship.clamp(new_pos.z, 3, 109)
-        new_pos.x = ap_airship.clamp(new_pos.x, -43, 43)
+        if math.abs(pos.x) < 4 and pos.z <= 3 then --corridor to exit
+            new_pos.z = ap_airship.clamp(new_pos.z, -115, 5)
+            new_pos.x = ap_airship.clamp(new_pos.x, -3, 3)
+        else
+            new_pos.z = ap_airship.clamp(new_pos.z, 3, 109)
+            new_pos.x = ap_airship.clamp(new_pos.x, -43, 43)
+        end
 
         new_pos = is_obstacle_zone(new_pos, {x=30, z=10}, {x=2, z=48})
         new_pos = is_obstacle_zone(new_pos, {x=-30, z=10}, {x=-2, z=48})
