@@ -29,11 +29,14 @@ function ap_airship.pilot_formspec(name)
     if ent._at_control then take_control = "true" end
     local anchor = "false"
     if ent.anchored == true then anchor = "true" end
+    local rescue = "false"
+    if ent._rescue_plane == true then rescue = "true" end
 
 	basic_form = basic_form.."button[1,1.0;4,1;turn_on;Start/Stop engines]"
     basic_form = basic_form.."button[1,3.0;4,1;inventory;Open inventory]"
     --basic_form = basic_form.."button[1,4.0;4,1;manual;Show Manual Menu]"
 
+    basic_form = basic_form.."checkbox[1,4.4;rescue;Rescue external plane;"..rescue.."]"
     basic_form = basic_form.."checkbox[1,5.6;take_control;Take the Control;"..take_control.."]"
     basic_form = basic_form.."checkbox[1,6.2;anchor;Anchor away;"..anchor.."]"
     
@@ -213,6 +216,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
             if fields.manual then
                 ap_airship.manual_formspec(name)
             end
+
+		    if fields.rescue then
+                if fields.rescue == "true" then
+                    ent._rescue_plane = true
+                    minetest.chat_send_player(name,core.colorize('#00ff00', " >>> Rescue plane in flight is turned on."))
+                else
+                    ent._rescue_plane = false
+                    minetest.chat_send_player(name,core.colorize('#ff0000', " >>> Rescue plane in flight is turned off."))
+                end
+		    end
+
 		    if fields.take_control then
                 if fields.take_control == "true" then
                     if ent.driver_name == nil or ent.driver_name == "" then

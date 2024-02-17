@@ -389,7 +389,7 @@ minetest.register_entity('ap_airship:exit_interactor',{
 minetest.register_entity('ap_airship:chair_interactor',{
     initial_properties = {
 	    physical = false,
-	    collide_with_objects=false,
+	    collide_with_objects=true,
         collisionbox = {-0.3, 0, -0.3, 0.3, 1, 0.3},
 	    pointable=true,
 	    visual = "mesh",
@@ -458,7 +458,7 @@ minetest.register_entity('ap_airship:ent_collider',{
 minetest.register_entity('ap_airship:stand_base',{
     initial_properties = {
 	    physical = true,
-	    collide_with_objects=true,
+	    collide_with_objects=false,
         collisionbox = {-2, -2, -2, 2, 0, 2},
 	    pointable=false,
 	    visual = "mesh",

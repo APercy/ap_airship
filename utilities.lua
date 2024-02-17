@@ -491,7 +491,7 @@ end
 function ap_airship.timed_anchor_entity(self, curr_pos, yaw, time, dtime)
     local time = time or 0
     if self._vehicle_custom_data.simple_external_attach_entity ~= nil then return end
-    if not self._timed_anchor_counter then self._timed_anchor_counter = time end
+    if not self._timed_anchor_counter then self._timed_anchor_counter = 0 end
     self._timed_anchor_counter = self._timed_anchor_counter + dtime
     if self._timed_anchor_counter < time then return nil, nil end --go out before the right time
 
