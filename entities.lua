@@ -530,7 +530,7 @@ minetest.register_entity("ap_airship:airship", {
     _inv_id = "",
     _name_color = 0,
     _name_hor_aligment = 3.0,
-    _simple_attach_pos = {x=0,y=-25,z=-40},
+    _simple_attach_pos = {x=0,y=-35,z=-70},
 
     item = "ap_airship:airship",
 

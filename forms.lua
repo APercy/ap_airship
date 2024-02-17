@@ -164,12 +164,24 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         end
         local ent = plane_obj:get_luaentity()
         if ent then
-		    if fields.attach then
-                airutils.simple_external_attach(ent, ent._simple_attach_pos, fields.entity, 22)
-		    end
-		    if fields.dettach then
-                airutils.dettach_entity(ent)
-		    end
+            local can_bypass = minetest.check_player_privs(player, {protection_bypass=true})
+            local is_shared = false
+            if name == ent.owner or can_bypass then is_shared = true end
+            for k, v in pairs(ent._shared_owners) do
+                if v == name then
+                    is_shared = true
+                    break
+                end
+            end
+
+            if is_shared then
+		        if fields.attach then
+                    airutils.simple_external_attach(ent, ent._simple_attach_pos, fields.entity, 22, true)
+		        end
+		        if fields.dettach then
+                    airutils.dettach_entity(ent)
+		        end
+            end
         end
         minetest.close_formspec(name, "ap_airship:logo_main")
     end
