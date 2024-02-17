@@ -464,3 +464,53 @@ function ap_airship.copy_vector(original_vector)
     return tablecopy
 end
 
+function ap_airship.eval_interception(initial_pos, end_pos, target_list)
+    target_list = target_list or {}
+    --minetest.chat_send_all(dump(end_pos))
+    local ret_y = nil
+	local cast = minetest.raycast(initial_pos, end_pos, true, false)
+	local thing = cast:next()
+	while thing do
+		if thing.type == "object" then
+            local object = thing.ref
+            local ent = object:get_luaentity()
+            if ent then
+                for k, v in pairs(target_list) do
+                    --minetest.chat_send_all(ent.name)
+                    if v == ent.name then
+                        return ent, object
+                    end
+                end
+            end
+        end
+        thing = cast:next()
+    end
+    return nil, nil
+end
+
+function ap_airship.timed_anchor_entity(self, curr_pos, yaw, time, dtime)
+    local time = time or 0
+    if self._vehicle_custom_data.simple_external_attach_entity ~= nil then return end
+    if not self._timed_anchor_counter then self._timed_anchor_counter = time end
+    self._timed_anchor_counter = self._timed_anchor_counter + dtime
+    if self._timed_anchor_counter < time then return nil, nil end --go out before the right time
+
+    if self._timed_anchor_counter >= time then
+        self._timed_anchor_counter = 0
+        local relative_pos = vector.new(self._simple_attach_pos)
+        local rel_pos = vector.divide(relative_pos,10)
+        local move = -1*rel_pos.z
+        local raycast_pos = vector.new(curr_pos)
+        raycast_pos.x = raycast_pos.x + move * math.sin(yaw)
+        raycast_pos.z = raycast_pos.z - move * math.cos(yaw)
+        raycast_pos.y = raycast_pos.y + rel_pos.y
+        local ent, obj = ap_airship.eval_interception(raycast_pos, {x=raycast_pos.x, y=raycast_pos.y-4, z=raycast_pos.z}, self._simple_attach_ent_list)
+        if ent then
+            local dest_pos = vector.add(vector.new(curr_pos), relative_pos)
+            --airutils.attach_external_object(self, object, ent, destination_pos, relative_pos, attach_up)
+            airutils.attach_external_object(self, obj, ent, dest_pos, relative_pos, true)
+        end
+    end
+end
+
+

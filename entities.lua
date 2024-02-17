@@ -528,9 +528,11 @@ minetest.register_entity("ap_airship:airship", {
     _disconnection_check_time = 0,
     _inv = nil,
     _inv_id = "",
+    _rescue_plane = false,
     _name_color = 0,
     _name_hor_aligment = 3.0,
     _simple_attach_pos = {x=0,y=-35,z=-70},
+    _simple_attach_ent_list = {"albatros_d5:albatros_d5","sopwith_f1_camel:sopwith_f1_camel","supercub:supercub"},
 
     item = "ap_airship:airship",
 
@@ -552,6 +554,7 @@ minetest.register_entity("ap_airship:airship", {
             stored_passengers_locked = self._passengers_locked,
             stored_vehicle_custom_data = self._vehicle_custom_data or {},
             stored_ship_name = self._ship_name,
+            stored_rescue_plane = self._rescue_plane,
         })
     end,
 
@@ -582,6 +585,7 @@ minetest.register_entity("ap_airship:airship", {
             self._passengers = data.stored_passengers or ap_airship.copy_vector({[1]=nil, [2]=nil, [3]=nil, [4]=nil, [5]=nil, [6]=nil, [7]=nil, [8]=nil, [9]=nil, [10]=nil, [11]=nil, [12]=nil})
             self._passengers_locked = data.stored_passengers_locked
             self._ship_name = data.stored_ship_name
+            self._rescue_plane = data.stored_rescue_plane or false
 
             local custom_data = data.stored_vehicle_custom_data or nil
             if custom_data then
@@ -829,6 +833,10 @@ minetest.register_entity("ap_airship:airship", {
             self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=-28,y=0,z=0})
         else
             self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=0,y=0,z=0})
+
+            if self._rescue_plane then
+                ap_airship.timed_anchor_entity(self, curr_pos, yaw, 3, self.dtime)
+            end
         end
 
         --saves last velocy for collision detection (abrupt stop)

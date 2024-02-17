@@ -62,7 +62,17 @@ function ap_airship.external_attach(name)
         "size[6,4]",
 	}, "")
 
-    local entities = "albatros_d5:albatros_d5,sopwith_f1_camel:sopwith_f1_camel,supercub:supercub"
+    local player = minetest.get_player_by_name(name)
+    local plane_obj = ap_airship.getPlaneFromPlayer(player)
+    if plane_obj == nil then
+        return
+    end
+    local ent = plane_obj:get_luaentity()
+
+    local entities = ""
+    for k, v in pairs(ent._simple_attach_ent_list) do
+        entities = entities .. v .. ","
+    end
 
     basic_form = basic_form.."label[1,1.0;Attach Outside:]"
     basic_form = basic_form.."dropdown[1,1.6;4,0.6;entity;"..entities..";1;false]"
@@ -159,7 +169,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
         local name = player:get_player_name()
         local plane_obj = ap_airship.getPlaneFromPlayer(player)
         if plane_obj == nil then
-            minetest.close_formspec(name, "ap_airship:logo_main")
+            minetest.close_formspec(name, "ap_airship:attach_main")
             return
         end
         local ent = plane_obj:get_luaentity()
