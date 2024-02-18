@@ -2,28 +2,44 @@ Minetest 5.4 mod: Airship
 ========================================
 
 This mod implements an airship for minetest. This airship is affected by the wind. The wind better works
-with Climate API
-THIS IS VERY EXPERIMENTAL AND HAVE A LOT OF MISSING FEATURES. AND I KNOW IT
-I will remove the above text in future, I hope.
+with Climate API (and with climate API you can stop it using /set_wind 0 0 )
+THIS IS HIGHLY EXPERIMENTAL AND HAVE A LOT OF MISSING FEATURES. AND I KNOW IT
+THE COLLISION SYSTEM IS VERY RUDIMENTARY
+The fuel system isn't exists yet, so I don't recomend giving it to players yet if you put it into a server
 
 Shortcuts:
 
-punch with dye to paint
 forward and backward while in drive position: controls the power lever
 left and right while in drive position: controls the direction
 jump and sneak: controls the up and down movement
 
-- right click to enter and access menu
-- E + right click while inside: acess inventory
+- right click into the external stair to enter it
 - E + backward while in drive position: the machine does backward
 - E + foward while in drive position: extra power
+- right click into drive wheel to activate pilot menu
+- right click into the internal ladders to go out
+- right click into any seat to sit your player
+- the anchor only works when the airship is near stoped
+
+Remembering AGAIN, it is affected by winds, so it will need patience to learn to control
 
 Tip:
 Drive it gently.
 The captain can leave the drive position to walk too
-If a player goes timeout or logoff in flight, the blimp will "rescue" him if no other player
-enter the blimp, so is a good idea wait the friend at a secure place far from anyone who
-wants to enter the blimp.
+If a player goes timeout or logoff in flight, the airship will "rescue" him if no other player
+enter it, so is a good idea wait the friend at a secure place far from anyone who
+wants to enter the airship.
+
+Special functions:
+/external_attach_menu
+- it opens the menu to attach a plane into the airship (who watched Indiana Jones and The Last Cruzade
+  will understand)
+  to access the plane during the flight, go to the ladder at the end of the airship and right click it
+  to release the plane during the flight, use /remove_hook (BEWARE: the airship have to be moving fast
+  and the plane power have to be at 1/4 to avoid collision and death (for the plane pilot))
+There is an option on pilot menu to activate the rescue mode. So if a plane (Supercub, Camel or Albatroz)
+wait bellow the ship belly IN FLIGHT, it will be automatically hooked after 3 seconds
+
 
 Know issues:
 The walk movement inside the ship is affected by server lag, because the lack of
@@ -34,8 +50,6 @@ MIT (see file LICENSE)
 
 License of media (textures and sounds):
 ---------------------------------------
-collision.ogg by APercy, CC0
-
 Airship model and textures by APercy. CC BY-SA 3.0
 
 Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)
