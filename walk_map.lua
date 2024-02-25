@@ -178,6 +178,11 @@ local function get_result_pos(self, player, index)
 
         local direction = player:get_look_horizontal()
         local rotation = self.object:get_rotation()
+        local parent_obj = self.object:get_attach()
+        if parent_obj then
+            rotation = parent_obj:get_rotation()
+        end
+
         direction = direction - rotation.y
 
         pos = vector.new()
