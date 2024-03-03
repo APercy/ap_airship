@@ -597,8 +597,12 @@ minetest.register_entity("ap_airship:airship", {
 
             --minetest.debug("loaded: ", self._energy)
             local properties = self.object:get_properties()
-            properties.infotext = data.stored_owner .. " nice airship"
+            properties.infotext = (data.stored_owner or "") .. " nice airship"
             self.object:set_properties(properties)
+            if data.remove then
+                self.object:remove()
+                return
+            end
         end
 
         local colstr = ap_airship.colors[self.color]
