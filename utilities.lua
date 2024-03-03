@@ -185,6 +185,11 @@ function ap_airship.dettach_pax(self, player, side)
     if not self._passengers then return end
     if player then
         local name = player:get_player_name() --self._passenger
+        if self.driver_name == name then
+            self.driver_name = nil
+            self._at_control = false
+        end
+
         ap_airship.remove_hud(player)
 
         -- passenger clicked the object => driver gets off the vehicle
