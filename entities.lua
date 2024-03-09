@@ -600,6 +600,7 @@ minetest.register_entity("ap_airship:airship", {
             properties.infotext = (data.stored_owner or "") .. " nice airship"
             self.object:set_properties(properties)
             if data.remove then
+                airutils.destroy_inventory(self)
                 self.object:remove()
                 return
             end
@@ -824,7 +825,12 @@ minetest.register_entity("ap_airship:airship", {
         self.object:set_acceleration(accel)
         self.object:set_rotation({x=newpitch,y=newyaw,z=newroll})
 
-        local N_angle = math.deg(newyaw)
+        local compass_angle = newyaw
+        local rem_obj = self.object:get_attach()
+        if rem_obj then
+            compass_angle = rem_obj:get_rotation().y
+        end
+        local N_angle = math.deg(compass_angle)
         local S_angle = N_angle + 180
 
         self.object:set_bone_position("elevator", {x=0,y=60.5919,z=-284.79}, {x=0,y=newpitch,z=0})
