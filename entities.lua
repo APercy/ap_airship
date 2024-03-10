@@ -601,7 +601,8 @@ minetest.register_entity("ap_airship:airship", {
             self.object:set_properties(properties)
             if data.remove then
                 airutils.destroy_inventory(self)
-                ap_airship.destroy(self)
+                self.object:remove()
+                --ap_airship.destroy(self)
                 return
             end
         end
