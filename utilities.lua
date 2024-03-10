@@ -321,6 +321,7 @@ function ap_airship.destroy(self, overload)
     if self._cabin2 then self._cabin2:remove() end
 
     airutils.destroy_inventory(self)
+    local autofly = self._autoflymode
     self.object:remove()
 
     pos.y=pos.y+2
@@ -356,7 +357,9 @@ function ap_airship.destroy(self, overload)
         local boat_wear = math.floor(65535*(1-(self.hull_integrity/item_def.hull_integrity)))
         stack:set_wear(boat_wear)
     end
-    minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5}, stack)
+    if not autofly then
+        minetest.add_item({x=pos.x+math.random()-0.5,y=pos.y,z=pos.z+math.random()-0.5}, stack)
+    end
 end
 
 --returns 0 for old, 1 for new
