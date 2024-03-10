@@ -715,6 +715,7 @@ minetest.register_entity("ap_airship:airship", {
         local hull_direction = minetest.yaw_to_dir(yaw)
         local nhdir = {x=hull_direction.z,y=0,z=-hull_direction.x}        -- lateral unit vector
         local velocity = self.object:get_velocity()
+        local curr_pos = self.object:get_pos()
         local wind_speed = airutils.get_wind(curr_pos, 0.15)
         
         local longit_speed = ap_airship.dot(velocity,hull_direction)
@@ -730,7 +731,6 @@ minetest.register_entity("ap_airship:airship", {
                 LATER_DRAG_FACTOR*-1*ap_airship.sign(later_speed))
         local accel = vector.add(longit_drag,later_drag)
 
-        local curr_pos = self.object:get_pos()
         self._last_pos = curr_pos
         self.object:move_to(curr_pos)
 
