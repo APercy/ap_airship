@@ -555,6 +555,7 @@ minetest.register_entity("ap_airship:airship", {
             stored_vehicle_custom_data = self._vehicle_custom_data or {},
             stored_ship_name = self._ship_name,
             stored_rescue_plane = self._rescue_plane,
+            remove = self._remove or false,
         })
     end,
 
@@ -586,6 +587,7 @@ minetest.register_entity("ap_airship:airship", {
             self._passengers_locked = data.stored_passengers_locked
             self._ship_name = data.stored_ship_name
             self._rescue_plane = data.stored_rescue_plane or false
+            self._remove = data.remove or false
 
             local custom_data = data.stored_vehicle_custom_data or nil
             if custom_data then
@@ -599,7 +601,7 @@ minetest.register_entity("ap_airship:airship", {
             local properties = self.object:get_properties()
             properties.infotext = (data.stored_owner or "") .. " nice airship"
             self.object:set_properties(properties)
-            if data.remove then
+            if self._remove == true then
                 airutils.destroy_inventory(self)
                 self.object:remove()
                 --ap_airship.destroy(self)
