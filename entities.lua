@@ -300,6 +300,7 @@ minetest.register_entity('ap_airship:control_interactor',{
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}
+        self.object:set_armor_groups({immortal=1})
 	    if self.sdata.remove then self.object:remove() end
     end,
 	    
@@ -333,6 +334,7 @@ minetest.register_entity('ap_airship:cabin_interactor',{
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}
+        self.object:set_armor_groups({immortal=1})
 	    if self.sdata.remove then self.object:remove() end
     end,
 	    
@@ -366,6 +368,7 @@ minetest.register_entity('ap_airship:exit_interactor',{
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}
+        self.object:set_armor_groups({immortal=1})
 	    if self.sdata.remove then self.object:remove() end
     end,
 	    
@@ -400,6 +403,7 @@ minetest.register_entity('ap_airship:chair_interactor',{
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}
+        self.object:set_armor_groups({immortal=1})
 	    if self.sdata.remove then self.object:remove() end
     end,
 	    
@@ -426,6 +430,7 @@ minetest.register_entity('ap_airship:ent_collider',{
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}
+        self.object:set_armor_groups({immortal=1})
 	    if self.sdata.remove then self.object:remove() end
     end,
 	    
@@ -469,6 +474,7 @@ minetest.register_entity('ap_airship:stand_base',{
 	
     on_activate = function(self,std)
 	    self.sdata = minetest.deserialize(std) or {}
+        self.object:set_armor_groups({immortal=1})
 	    if self.sdata.remove then self.object:remove() end
     end,
 	    
@@ -665,8 +671,6 @@ minetest.register_entity("ap_airship:airship", {
         self.object:set_animation({x = 1, y = 47}, 0, 0, true)
 
         self.object:set_bone_position("low_rudder_a", {x=0,y=0,z=-40}, {x=-5.35,y=0,z=0})
-
-        self.object:set_armor_groups({immortal=1})
 
         airutils.actfunc(self, staticdata, dtime_s)
 
