@@ -847,9 +847,9 @@ minetest.register_entity("ap_airship:airship", {
 
 		noded = airutils.nodeatpos(airutils.pos_shift(curr_pos,{y=-4.5}))
 	    if (noded and noded.drawtype ~= 'airlike') or self.isonground then
-            self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=-28,y=0,z=0})
+            --self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=0,y=0,z=0}) -- -28
         else
-            self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=0,y=0,z=0})
+            --self.object:set_bone_position("door", {x=0,y=-13.1266,z=54.1922}, {x=0,y=0,z=0})
 
             if self._rescue_plane then
                 ap_airship.timed_anchor_entity(self, curr_pos, yaw, 3, self.dtime)
