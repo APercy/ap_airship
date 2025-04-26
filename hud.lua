@@ -35,7 +35,49 @@ function ap_airship.animate_gauge(player, ids, prefix, x, y, angle)
     player:hud_change(ids[prefix .. "7"], "offset", {x = pos_x + x, y = pos_y + y})
 end
 
-function ap_airship.update_hud(player, coal, water, pressure, power_lever)
+local hud_panel_x = 10      -- HUD left offset
+local hud_panel_y = -10     -- HUD bottom offset
+
+-- Ground speed indicator
+-- left bottom corner
+local gs_ind_x = hud_panel_x
+local gs_ind_y = hud_panel_y
+-- zero position
+local gs_ind_zero_x = gs_ind_x + 83
+local gs_ind_zero_y = gs_ind_y - 42
+-- indicator range
+local gs_ind_range_xmin = gs_ind_zero_x - 56
+local gs_ind_range_xmax = gs_ind_zero_x + 58
+local gs_ind_xstep = 57 / 4
+local gs_ind_range_ymax = gs_ind_y - 154
+local gs_ind_range_ymin = gs_ind_y - 13
+local gs_ind_ystep = math.abs(gs_ind_range_ymax - gs_ind_zero_y) / 8
+
+local function bound(min, value, max)
+    return math.max(math.min(value, max), min)
+end
+
+local function set_gs_indicator(player, ids, forward, right)
+    player:hud_change(
+        ids["gs_hor"],
+        "offset",
+        {
+            x = gs_ind_x,
+            y = gs_ind_zero_y - bound(-2, forward, 8) * gs_ind_ystep
+        }
+    )
+    player:hud_change(
+        ids["gs_vert"],
+        "offset",
+        {
+            x = gs_ind_zero_x + bound(-4, right, 4) * gs_ind_xstep,
+            y = gs_ind_y
+        }
+    )
+end
+
+function ap_airship.update_hud(self, coal, water, pressure, power_lever)
+    local player = minetest.get_player_by_name(self.driver_name)
     if player == nil then return end
     local player_name = player:get_player_name()
 
@@ -56,6 +98,18 @@ function ap_airship.update_hud(player, coal, water, pressure, power_lever)
     local ids = ap_airship.hud_list[player_name]
     if ids then
         player:hud_change(ids["throttle"], "offset", {x = throttle_x, y = throttle_y - power_lever})
+
+        local yaw = self.object:get_rotation().y
+        local velocity = self.object:get_velocity()
+        local sin_yaw = math.sin(yaw)
+        local cos_yaw = math.cos(yaw)
+
+        set_gs_indicator(
+            player,
+            ids,
+            velocity.z * cos_yaw - velocity.x * sin_yaw,
+            velocity.z * sin_yaw + velocity.x * cos_yaw
+        )
 
         --[[local coal_value = coal
         if coal_value > 99 then coal_value = 99 end
@@ -94,6 +148,52 @@ function ap_airship.update_hud(player, coal, water, pressure, power_lever)
             text      = "ap_airship_throttle.png",
             scale     = { x = 0.5, y = 0.5},
             alignment = { x = 1, y = 0 },
+        })
+
+        ids["gs_bg"] = player:hud_add({
+            hud_elem_type = "image",
+            position      = { x = 0, y = 1 },
+            offset        = { x = gs_ind_x, y = gs_ind_y },
+            text          = "ap_airship_ind_gs_bg.png",
+            scale         = { x = 1, y = 1 },
+            alignment     = { x = 1, y = -1 },
+        })
+
+        ids["gs_hor"] = player:hud_add({
+            hud_elem_type = "image",
+            position      = { x = 0, y = 1 },
+            offset        = { x = gs_ind_x, y = gs_ind_range_ymin },
+            text          = "ap_airship_ind_gs_lh.png",
+            scale         = { x = 170, y = 1 },
+            alignment     = { x = 1, y = -1 },
+        })
+
+        ids["gs_vert"] = player:hud_add({
+            hud_elem_type = "image",
+            position      = { x = 0, y = 1 },
+            offset        = { x = gs_ind_range_xmin, y = gs_ind_y },
+            text          = "ap_airship_ind_gs_lv.png",
+            scale         = { x = 1, y = 170 },
+            alignment     = { x = 1, y = -1 },
+        })
+
+        ids["gs_fg"] = player:hud_add({
+            hud_elem_type = "image",
+            position      = { x = 0, y = 1 },
+            offset        = { x = gs_ind_x, y = gs_ind_y },
+            text          = "ap_airship_ind_gs_fg.png",
+            scale         = { x = 1, y = 1 },
+            alignment     = { x = 1, y = -1 },
+        })
+
+        ids["gs_caption"] = player:hud_add({
+            hud_elem_type = "text",
+            position      = { x = 0, y = 1 },
+            offset        = { x = gs_ind_zero_x, y = gs_ind_y - 170 },
+            text          = "Ground Speed",
+            scale         = { x = 1, y = 1 },
+            alignment     = { x = 0, y = -1 },
+            number        = 0xFFFFFF,
         })
 
         --[[ids["coal_1"] = player:hud_add({
