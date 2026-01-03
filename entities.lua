@@ -49,7 +49,7 @@ local function right_click_function(self, clicker)
                 if name == self.owner or can_bypass then is_shared = true end
                 for k, v in pairs(self._shared_owners) do
                     if v == name then
-                        is_shared = trueright_click_function
+                        is_shared = true
                         break
                     end
                 end
