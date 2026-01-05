@@ -254,8 +254,10 @@ function ap_airship.move_persons(self)
                             --minetest.chat_send_all(dump(new_pos))
                             local pos_d = ap_airship.navigate_deck(self._passengers_base_pos[i], new_pos, player)
                             --minetest.chat_send_all(dump(height))
-                            self._passengers_base_pos[i] = ap_airship.copy_vector(pos_d)
-                            self._passengers_base[i]:set_attach(self.object,'',self._passengers_base_pos[i],{x=0,y=0,z=0})
+                            if self._passengers_base_pos[i].x ~= pos_d.x and self._passengers_base_pos[i].z ~= pos_d.z then
+                                self._passengers_base_pos[i] = ap_airship.copy_vector(pos_d)
+                                self._passengers_base[i]:set_attach(self.object,'',self._passengers_base_pos[i],{x=0,y=0,z=0})
+                            end
                         end
                         --minetest.chat_send_all(dump(self._passengers_base_pos[i]))
                         player:set_attach(self._passengers_base[i], "", {x = 0, y = 0, z = 0}, {x = 0, y = y_rot, z = 0})
