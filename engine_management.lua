@@ -39,12 +39,11 @@ function ap_airship.engine_step(self, accel)
     engines_step(self, accel)
 
     if self.driver_name then
-        local player = minetest.get_player_by_name(self.driver_name)
 
         local pressure = 0
         local coal = self._energy
         --minetest.chat_send_all(self._power_lever)
-        ap_airship.update_hud(player, coal, 180, -pressure, self._power_lever)
+        ap_airship.update_hud(self, coal, 180, -pressure, self._power_lever)
     end
 end
 
